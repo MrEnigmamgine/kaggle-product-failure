@@ -63,4 +63,5 @@ def impute_potatoes(train, test, validate):
     return train, test, validate
 
 def wrangle_potatoes():
-    return impute_potatoes(*get_potatoes())
+    train, test, validate = get_potatoes()
+    return impute_potatoes(train, test, validate)

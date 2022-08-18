@@ -620,11 +620,22 @@ def find_k(df, cluster_vars, k_range, seed=SEED):
     return k_comparisons_df
 
 
+def upsample_target(df, target, val):
+    from sklearn.utils import resample
+    # Upsample the dfing data to balance a class imbalance
+    minority_upsample = resample( df[df[target] == val],   #DF of samples to replicate
+                                replace = True,         #Implements resampling with replacement, Default=True
+                                n_samples = len(df[df[target]!=val]), #Number of samples to produce
+                                random_state= 8         #Random State seed for reproducibility
+                                )
+    #Then glue the upsample to the original
+    return pd.concat([minority_upsample, df[df[target]!=val]])
+
 #####################################################
 #                  MODEL EVALUATION                 #
 #####################################################
 
-class BaselineRegressor:
+class BaselineModel:
     """ A simple class meant to mimic sklearn's modeling methods so that I can standardize my workflow.
     Assumes that you are fitting a single predictor.  
     For multiple predictors you will need multiple instances of this class.
@@ -632,22 +643,31 @@ class BaselineRegressor:
     TODO: Handle multi-dimensional predictors
     TODO: Handle saving feature names
     """
-    def __init__(self):
-        """This isn't needed, but I'm leaving this here to remind myself that it's a thing."""
-        pass
-
+    def __init__(self, method='mean'):
+        """Initializes the model with the aggregation function defined, which will be used for fitting later."""
+        self.method = method
 
     def fit(self, y):
-        """Calculates the mean for the target variable and assigns it to this instance."""
+        """Calculates the baseline for the target variable and assigns it to this instance."""
         if len(y.shape) == 1:
-            self.baseline = y.mean()
+            self.baseline = y.agg(func=self.method)[0]
+            self.baseline_proba = (y == self.baseline).mean()
         else:
              raise ValueError('Expected a 1 dimensional array.')
 
     def predict(self, x):
-        """Always predicts the mean value."""
+        """Always predicts the baseline value."""
         n_predictions = len(x)
         return np.full((n_predictions), self.baseline)
+
+    def predict_proba(self, x, invert=False):
+        """For classification problems, a probability prediction."""
+        n_predictions = len(x)
+
+        if not invert:
+            return np.full((n_predictions), self.baseline_proba)
+        else:
+            return np.full((n_predictions), 1- self.baseline_proba)
 
 def regression_metrics(actual: pd.Series, predicted: pd.Series) -> dict:
     """Standardises the evaluation of a model's metrics."""
