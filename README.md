@@ -1,5 +1,5 @@
-# Kaggle Product Failure
 <a name="top"></a>
+# Kaggle Product Failure
 
 
 - [Project Description](#project_desc)  
@@ -15,8 +15,8 @@
 
 
 
-# About the project 
 <a name="project_desc"></a>
+# About the project 
 
 This project is meant to produce a set of predictions for entry into a kaggle competition.  This particular competition is a classification problem using ROC Area Under Curve as the target metric.
 
@@ -57,8 +57,8 @@ Collection of the data is straight-forward since this is a kaggle competition.  
 My initial hypothesis for this problem is that I might be able to find a pattern or cluster using two or three variables that shows a division or concentration of failed tests.
 
 
-# Exploration:
 <a name="explore"></a>
+# Exploration:
 
 ## Data Dictionary
 | Attribute | Data Type | Definition |
