@@ -48,6 +48,8 @@ The company has data for several existing versions of the products and the failu
     - `failure` : the predicted probability of failure.
 
 [[Back to top](#top)]
+
+<a name="plan"></a>
 # Planning
 
 ## Data wrangling
